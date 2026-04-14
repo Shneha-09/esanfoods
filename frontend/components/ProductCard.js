@@ -7,7 +7,7 @@ export default function ProductCard({ product, addToCart }) {
       background: "#fff"
     }}>
       <img
-        src={`http://localhost:5000/uploads/${product.image}`}
+        src={`https://esanfoods.onrender.com/uploads/${product.image}`}
         alt={product.name}
         onError={(e) => {
           e.target.src = "/fallback.png";

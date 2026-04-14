@@ -10,7 +10,7 @@ export default function ProductPage() {
   useEffect(() => {
     if (!id) return;
 
-    fetch(`http://localhost:5000/api/products/${id}`)
+    fetch(`https://esanfoods.onrender.com/api/products/${id}`)
       .then(res => res.json())
       .then(data => setProduct(data));
   }, [id]);
@@ -22,7 +22,7 @@ export default function ProductPage() {
       <h1>{product.name}</h1>
 
       <img
-        src={`http://localhost:5000/uploads/${product.image}`}
+        src={`https://esanfoods.onrender.com/uploads/${product.image}`}
         width="300"
       />
 

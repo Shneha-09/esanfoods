@@ -8,7 +8,7 @@ export default function Home() {
   const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/products")
+    fetch("https://esanfoods.onrender.com/api/products")
       .then((res) => res.json())
       .then((data) => setProducts(data));
 

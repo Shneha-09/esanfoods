@@ -79,7 +79,7 @@ export default function Cart() {
                   }}
                 >
                   <img
-                    src={`http://localhost:5000/uploads/${item.image}`}
+                    src={`https://esanfoods.onrender.com/uploads/${item.image}`}
                     style={{
                       width: "100px",
                       height: "100px",

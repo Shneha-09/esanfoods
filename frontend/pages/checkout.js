@@ -31,7 +31,7 @@ export default function Checkout() {
     }
 
     try {
-      await fetch("http://localhost:5000/api/save-order", {
+      await fetch("https://esanfoods.onrender.com/api/save-order", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
