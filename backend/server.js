@@ -4,6 +4,7 @@ const multer = require("multer");
 const path = require("path");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const fs = require("fs");
 
 dotenv.config();
 
@@ -12,27 +13,30 @@ const app = express();
 /* ================= MIDDLEWARE ================= */
 
 app.use(cors({
-  origin: "*", // allow Vercel frontend
+  origin: "*",
 }));
 
 app.use(express.json());
+
+// ensure uploads folder exists (important for Render)
+if (!fs.existsSync("uploads")) {
+  fs.mkdirSync("uploads");
+}
+
 app.use("/uploads", express.static("uploads"));
 
 /* ================= DB CONNECT ================= */
 
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log("✅ MongoDB Connected"))
-.catch((err) => {
-  console.error("❌ DB Error:", err);
-  process.exit(1);
-});
+// ✅ FIXED (removed old options)
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch((err) => {
+    console.error("❌ DB Error:", err);
+    process.exit(1);
+  });
 
 /* ================= MODELS ================= */
 
-// PRODUCT MODEL
 const Product = mongoose.model("Product", {
   name: { type: String, required: true },
   price: { type: Number, required: true },
@@ -40,7 +44,6 @@ const Product = mongoose.model("Product", {
   image: String,
 });
 
-// ORDER MODEL
 const Order = mongoose.model("Order", {
   name: String,
   phone: String,
@@ -71,11 +74,12 @@ const upload = multer({ storage });
 
 /* ================= ROUTES ================= */
 
-// TEST ROUTE
+// ROOT
 app.get("/", (req, res) => {
   res.send("🚀 API is running");
 });
 
+// TEST
 app.get("/test", (req, res) => {
   res.send("✅ Server is working");
 });
