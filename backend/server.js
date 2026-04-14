@@ -9,27 +9,38 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
+/* ================= MIDDLEWARE ================= */
+
+app.use(cors({
+  origin: "*", // allow Vercel frontend
+}));
+
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
 /* ================= DB CONNECT ================= */
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB Connected"))
-  .catch(err => console.log("❌ DB Error:", err));
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("✅ MongoDB Connected"))
+.catch((err) => {
+  console.error("❌ DB Error:", err);
+  process.exit(1);
+});
 
 /* ================= MODELS ================= */
 
-// ✅ PRODUCT MODEL
+// PRODUCT MODEL
 const Product = mongoose.model("Product", {
-  name: String,
-  price: Number,
+  name: { type: String, required: true },
+  price: { type: Number, required: true },
   description: String,
   image: String,
 });
 
-// ✅ ORDER MODEL
+// ORDER MODEL
 const Order = mongoose.model("Order", {
   name: String,
   phone: String,
@@ -38,7 +49,7 @@ const Order = mongoose.model("Order", {
   pincode: String,
   items: Array,
   total: Number,
-  paymentMethod: String, // ✅ changed
+  paymentMethod: String,
   createdAt: {
     type: Date,
     default: Date.now,
@@ -48,7 +59,9 @@ const Order = mongoose.model("Order", {
 /* ================= FILE UPLOAD ================= */
 
 const storage = multer.diskStorage({
-  destination: "./uploads",
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname));
   },
@@ -58,12 +71,18 @@ const upload = multer({ storage });
 
 /* ================= ROUTES ================= */
 
-// ✅ TEST ROUTE
+// TEST ROUTE
+app.get("/", (req, res) => {
+  res.send("🚀 API is running");
+});
+
 app.get("/test", (req, res) => {
   res.send("✅ Server is working");
 });
 
-// ➤ Add product
+/* ===== PRODUCTS ===== */
+
+// Add product
 app.post("/api/products", upload.single("image"), async (req, res) => {
   try {
     const { name, price, description } = req.body;
@@ -81,26 +100,34 @@ app.post("/api/products", upload.single("image"), async (req, res) => {
   }
 });
 
-// ➤ Get all products
+// Get all products
 app.get("/api/products", async (req, res) => {
-  const products = await Product.find();
-  res.json(products);
+  try {
+    const products = await Product.find();
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// ➤ Delete product
+// Delete product
 app.delete("/api/products/:id", async (req, res) => {
-  await Product.findByIdAndDelete(req.params.id);
-  res.json({ message: "Deleted" });
+  try {
+    await Product.findByIdAndDelete(req.params.id);
+    res.json({ message: "Deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-/* ================= ORDER (NO PAYMENT) ================= */
+/* ===== ORDERS ===== */
 
-// ✅ SAVE ORDER (MAIN FUNCTION)
+// Save order
 app.post("/api/save-order", async (req, res) => {
   try {
     const order = await Order.create({
       ...req.body,
-      paymentMethod: "Cash on Delivery", // ✅ fixed value
+      paymentMethod: "Cash on Delivery",
     });
 
     res.json(order);
@@ -110,14 +137,20 @@ app.post("/api/save-order", async (req, res) => {
   }
 });
 
-// ✅ GET ALL ORDERS
+// Get all orders
 app.get("/api/orders", async (req, res) => {
-  const orders = await Order.find().sort({ createdAt: -1 });
-  res.json(orders);
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 /* ================= SERVER ================= */
 
-app.listen(5000, () => {
-  console.log("🚀 Server running on http://localhost:5000");
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
