@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import Navbar from "../components/Navbar";
+import Features from "../components/Features";
+import Footer from "../components/Footer";
+import Hero from "../components/Hero";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -44,18 +47,19 @@ export default function Home() {
   return (
     <div>
       <Navbar cartCount={cartCount} setSearch={setSearch} />
+      <Hero />   {/* 👈 ADD THIS */}
 
       <div style={{ padding: "20px" }}>
         <h1 style={{
           textAlign:"center",
-          fontFamily:"Poppins,serif",
+          fontFamily:"Eras Bold ITC",
           fontSize:"28px",
           fontWeight:"bold",
         }}
         >
           Welcome to Esan Foods 🛒
         </h1>
-        <h1>Products</h1>
+        <h2>Products</h2>
 
         <div
           style={{
@@ -78,6 +82,8 @@ export default function Home() {
             ))}
         </div>
       </div>
+      <Features/>
+      <Footer/>
     </div>
   );
 }

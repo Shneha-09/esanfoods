@@ -1,10 +1,10 @@
 export default function ProductCard({ product, addToCart }) {
   return (
     <div style={{
-      border: "1px solid #e5e7eb",
+      border: "1px solid #bce4cc",
       padding: "15px",
       borderRadius: "12px",
-      background: "#fff"
+      background: "#b6e8b5"
     }}>
       <img
         src={`https://esanfoods.onrender.com/uploads/${product.image}`}
