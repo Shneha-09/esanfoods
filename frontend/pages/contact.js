@@ -47,7 +47,7 @@ export default function Contact() {
       </div>
 
       {/* EXTRA CONTACT INFO */}
-      <p>📞 +91 98765 43210</p>
+      <p>📞 +91 96884 05829 </p>
      {/* SOCIAL MEDIA */}
 <div style={{ marginTop: "20px" }}>
   <h3>Follow Us</h3>
